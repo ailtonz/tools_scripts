@@ -17,6 +17,7 @@ Sub ListRefPathsGUID()
 End Sub
 
 Sub AddRefGuid()
+On Error Resume Next
     'Add VBIDE (Microsoft Visual Basic for Applications Extensibility 5.3
    
     ThisWorkbook.VBProject.References.AddFromGuid _

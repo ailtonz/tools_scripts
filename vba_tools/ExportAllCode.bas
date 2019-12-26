@@ -1,3 +1,15 @@
+Attribute VB_Name = "ExportAllCode"
+
+Sub AddRefGuid()
+On Error Resume Next
+
+    'Add VBIDE (Microsoft Visual Basic for Applications Extensibility 5.3
+   
+    Application.VBE.VBProjects(1).References.AddFromGuid _
+        "{0002E157-0000-0000-C000-000000000046}", 2, 0
+ 
+End Sub
+
 Public Sub ExportAllCode()
 
     Dim c As VBComponent

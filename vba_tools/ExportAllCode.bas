@@ -1,6 +1,6 @@
 Attribute VB_Name = "ExportAllCode"
 
-Sub AddRefGuid()
+Private Sub AddRefGuid()
 On Error Resume Next
 
     'Add VBIDE (Microsoft Visual Basic for Applications Extensibility 5.3
@@ -11,6 +11,7 @@ On Error Resume Next
 End Sub
 
 Public Sub ExportAllCode()
+'' https://stackoverflow.com/questions/16948215/exporting-ms-access-forms-and-class-modules-recursively-to-text-files
 
     Dim c As VBComponent
     Dim Sfx As String
@@ -28,10 +29,28 @@ Public Sub ExportAllCode()
         End Select
 
         If Sfx <> "" Then
-            c.Export _
-                FileName:=CurrentProject.Path & "\" & _
-                c.Name & Sfx
+            
+            '''' EXCEL
+            CreateDir Application.ActiveWorkbook.Path & "\bas\"
+            c.Export FileName:=Application.ActiveWorkbook.Path & "\bas\" & c.Name & Sfx
+            
+            '''' MSACCESS
+            ''CreateDir CurrentProjectPath & "\bas\"
+            ''c.Export FileName:=CurrentProject.Path & "\bas\" & c.Name & Sfx
+                        
         End If
     Next c
 
 End Sub
+
+
+Private Function CreateDir(strPath As String) '' Criar estrutura de diretorios
+    Dim elm As Variant
+    Dim strCheckPath As String
+
+    strCheckPath = ""
+    For Each elm In Split(strPath, "\")
+        strCheckPath = strCheckPath & elm & "\"
+        If Len(Dir(strCheckPath, vbDirectory)) = 0 Then MkDir strCheckPath
+    Next
+End Function

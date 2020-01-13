@@ -15,8 +15,6 @@ Public Sub ExportAllCode()
 
     Dim c As VBComponent
     Dim Sfx As String
-    '' EXCEL
-'    Dim sFileName As String: sFileName = "\" & Left(ThisWorkbook.Name, Len(ThisWorkbook.Name) - 5)
     '' MSACCESS
     Dim sFileName As String: sFileName = "\" & Left(CurrentProject.Name, Len(CurrentProject.Name) - 4)
 
@@ -34,12 +32,8 @@ Public Sub ExportAllCode()
 
         If Sfx <> "" Then
             
-'            '''' EXCEL
-'            CreateDir Application.ActiveWorkbook.Path & sFileName & "\bas\"
-'            c.Export FileName:=Application.ActiveWorkbook.Path & sFileName & "\bas\" & c.Name & Sfx
-            
             '' MSACCESS
-            CreateDir CurrentProject.Path & "\bas\"
+            CreateDir CurrentProject.Path & sFileName & "\bas\"
             c.Export FileName:=CurrentProject.Path & sFileName & "\bas\" & c.Name & Sfx
                         
         End If

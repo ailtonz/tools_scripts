@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>01 - G-CA$H</Title>
+        <Shortcut></Shortcut>
+	<Description>Scripts prontos para auxilio no G-CA$H.</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+
+use DB_SISCOB
+go
+
+/****** CADASTRO DE CONTROLE  -- Administração da tabela de controle de app's auxiliares as sistema -- ******/
+	
+
+/*** CADASTRO DE CONTROLE 
+
+    declare @Comando varchar(max);
+		
+    SET QUOTED_IDENTIFIER OFF
+    set @Comando = "
+
+    "
+    SET QUOTED_IDENTIFIER ON 
+
+    INSERT INTO [ADM].[TB_APP_CONTROLE] ([TIPO] ,[DESCRICAO] ,[DESCRICAO_02] ,[DTSUBIDA] ,[DESCRICAO_03])
+    SELECT 
+    'DICAS' as tipo
+    ,'...' as objetivo
+    ,'' as observação
+    ,GETDATE() as dt_subida
+    ,@Comando;	
+		
+	******/			
+
+
+/****** LISTAGEM DE FOCO ******/
+		
+    SELECT *
+    FROM [DB_SISCOB].[ADM].[TB_APP_CONTROLE]
+    WHERE TIPO LIKE '%DICAS%'
+    ORDER BY ID DESC;
+
+
+/*** LISTAGEM DE TIPOS DE CONTROLE 
+	
+    SELECT DISTINCT TIPO
+    FROM [DB_SISCOB].[ADM].[TB_APP_CONTROLE]
+    ORDER BY TIPO;
+	
+	*/	
+
+	
+/****** CONTROLE DE LOG  
+	-- LOG DA SUBIDA DO FILE_CAR
+
+	SELECT *
+	FROM [DB_SISCOB].[BKP].[LOG_UPLOAD_FILE_CAR]
+	ORDER BY ID DESC
+
+	******/
+
+/****** ADM - USUÁRIOS  
+	-- Consulta em tabela de usuários
+
+	SELECT *
+	-- update t set t.psw='@teste'
+	FROM [DB_SISCOB].[APP_WEB].[TBL_USUARIOS] t
+	where 
+	--id_user = 50
+	[fname] like '%aman%'
+
+	******/
+
+/****** TB_CONSOLIDADO  
+
+      SELECT h.*
+      FROM [CONSOLIDADO].[TB_CONSUMO_SISCOB] CS
+      INNER JOIN [CONSOLIDADO].[TB_CONSOLIDADO] C ON C.ID = CS.ID_CONSOLIDADO
+      INNER JOIN [AUXILIAR].[TB_SEGMENTO] SG ON SG.ID = C.ID_SEGMENTO
+      INNER JOIN [AUXILIAR].[TB_PERIODO] P ON P.ID = C.ID_PERIODO
+      INNER JOIN [AUXILIAR].[TB_TIPO] TP ON C.ID_TIPO = TP.ID
+      LEFT JOIN [CONSOLIDADO].[TB_HISTORICO] H ON H.ID = CS.ID_HISTORICO_ATUAL
+      --where c.RAIZ_GRUPO=4061366936
+      ORDER BY c.id DESC
+
+	
+	******/
+	
+/****** CARTEIRAS  
+	SELECT *
+	FROM [DB_SISCOB].[AUXILIAR].[TB_ANALISTA_CARTEIRA_FIXA]
+	WHERE RAIZ_GRUPO = 4000357038
+
+	SELECT *
+	FROM [DB_SISCOB].[AUXILIAR].[TB_ANALISTA_CARTEIRA_MOVEL]
+	WHERE RAIZ_GRUPO = 4000357038
+	
+	******/
+				
+/****** TB_APP_CONTROLE  
+
+	SELECT ID
+		,[TIPO]
+		,[DESCRICAO]
+		,[DESCRICAO_02]
+		,[DTSUBIDA]
+		,[DESCRICAO_03]
+	FROM [DB_SISCOB].[ADM].[TB_APP_CONTROLE]
+	WHERE TIPO LIKE '%ACORDO%'
+	--AND ID=63
+	ORDER BY ID DESC
+	
+	******/
+	
+/****** TBL_ARQUIVOS_TRANSITO_ACORDOS  
+
+	SELECT TOP 1000 [id]
+		,[nm_arquivo]
+		,[diretorio]
+		,[inativo]
+		,[QUERY_RESUMO]
+		,[ID_ANALISTA]
+		,[DATA_SOLICITACAO]
+	FROM [DB_SISCOB].[APP_WEB].[TBL_ARQUIVOS_TRANSITO_ACORDOS]
+	where ID_ANALISTA = 98
+	order by id desc
+
+	******/
+	
+/****** VW_CONSUMO_CONSOLIDADO_ANALISTA  
+
+	SELECT [PROCV]
+		,[ID]
+		,[FORNECEDOR]
+		,[GRUPO]
+		,[NOME_ANALISTA]
+		,[NOME_ANALISTA_TMP]
+		,[FEEDBACK]
+		,[DESCRICAO_STATUS]
+	FROM [DB_SISCOB].[APP_EXCEL].[VW_CONSUMO_CONSOLIDADO_ANALISTA] c
+	where c.id in ('16766308')
+
+	******/
+	
+/****** TBL_ARQUIVOS_TRANSITO_SEGMENTO  
+
+	SELECT TOP 1000 [id]
+		,[arquivo]
+		,[diretorio]
+		,[segmento]
+		,[dt_atualizacao]
+		,[HISTORICO]
+	FROM [DB_SISCOB].[APP_WEB].[TBL_ARQUIVOS_TRANSITO_SEGMENTO]
+	order by id desc  
+
+	******/
+	
+/****** TB_STATUS_CAR  
+
+	SELECT TOP 1000 [ID]
+		,[ID_PERIODO]
+		,[DESCRICAO]
+		,[STATUS]
+		,[FILE_CAR]
+	FROM [DB_SISCOB].[AUXILIAR].[TB_STATUS_CAR]
+	order by id desc
+
+	******/
+	
+/****** TB_PERIODO  
+
+	SELECT TOP 1000 [ID]
+		,[PERIODO]
+		,[STATUS]
+	FROM [DB_SISCOB].[AUXILIAR].[TB_PERIODO]
+	ORDER BY ID DESC
+
+	******/
+		  
+/****** TB_APP_CONTROLE_LOG  
+
+	declare @Comando varchar(max);
+		
+	SET QUOTED_IDENTIFIER OFF
+	set @Comando = "
+
+	"
+	SET QUOTED_IDENTIFIER ON 
+
+	INSERT INTO [ADM].[TB_APP_CONTROLE_LOG]
+			([TIPO]
+			,[DESCRICAO]
+			,[DESCRICAO_02]
+			,[DTSUBIDA]
+			,[DESCRICAO_03])
+		SELECT 
+			'LOG_DELETE' as tipo
+			,'Antigo processo de exportação de cenario' as objetivo
+			,'[APP_WEB].[PRC_CENARIO]' as observação
+			,GETDATE() as dt_subida
+			,@Comando;
+
+	******/
+	
+/***** - ANALISE DE QUANTIDADE DE REGISTROS - 
+
+	--################################################################################
+	--### - MOVEL
+	--################################################################################
+
+	-- [MOVEL] - NOVAS 
+
+		SELECT count(*) AS qtdRegistros
+			,'NOVAS' AS Tipo
+			,'MOVEL' AS ORIGEM
+		FROM [DB_SISCOB].[FILE_CAR].[TB_TRATAMENTO_MOVEL_WEB] TM
+		INNER JOIN [DB_SISCOB].[FILE_CAR].[TB_CAR_MOVEL_IMPORT] MV ON TM.ID_IMPORT_MOVEL = MV.ID
+		LEFT JOIN [DB_SISCOB].[CONSOLIDADO].[TB_CONSOLIDADO] C ON TM.PROCV = C.PROCV
+			AND C.ID_PERIODO = (
+				SELECT MAX(ID)
+				FROM [DB_SISCOB].[AUXILIAR].[TB_PERIODO]
+				) --<<<<<<<<<<<<<<<< PERIODO
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] FH ON TM.ID_FX_FECHO = FH.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] AR ON TM.ID_FX_ARRECADA = AR.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] FN ON TM.ID_FX_FORNECE = FN.ID
+		WHERE TM.CHECK_CAR IS NULL
+			AND TM.OK = 1
+
+	-- [MOVEL] - EXISTENTES
+
+	UNION
+
+		SELECT count(*) AS qtdRegistros
+			,'EXISTENTES' AS Tipo
+			,'MOVEL' AS ORIGEM
+		FROM [DB_SISCOB].[CONSOLIDADO].[TB_CONSOLIDADO] TC
+		INNER JOIN [DB_SISCOB].[FILE_CAR].[TB_TRATAMENTO_MOVEL_WEB] TM ON TC.PROCV = TM.PROCV
+			AND TC.ID_PERIODO = (
+				SELECT MAX(ID)
+				FROM [DB_SISCOB].[AUXILIAR].[TB_PERIODO]
+				) --<<<<<<<<<<<<<<<< PERIODO
+		INNER JOIN [DB_SISCOB].[FILE_CAR].[TB_CAR_MOVEL_IMPORT] MV ON TM.ID_IMPORT_MOVEL = MV.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] FH ON TM.ID_FX_FECHO = FH.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] AR ON TM.ID_FX_ARRECADA = AR.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] FN ON TM.ID_FX_FORNECE = FN.ID
+		WHERE TM.OK = 1
+			AND TC.ID_SEGMENTO = 2
+			AND TM.CHECK_CAR = 1
+
+	-- [MOVEL] - TOTAIS
+
+	UNION
+
+		SELECT CONCAT (
+				'-'
+				,count(*)
+				) AS qtdRegistros
+			,CASE ISNULL(CHECK_CAR, 0)
+				WHEN 0
+					THEN 'NOVAS'
+				WHEN 1
+					THEN 'EXISTENTES'
+				ELSE 'SEM CLASSIFICACAO'
+				END AS Tipo
+			,'MOVEL' AS ORIGEM
+		FROM [DB_SISCOB].[FILE_CAR].[TB_TRATAMENTO_MOVEL_WEB]
+		WHERE ok = 1
+		GROUP BY CHECK_CAR
+
+	--################################################################################
+	--### - FIXA
+	--################################################################################
+
+	-- [FIXA] - NOVAS 
+
+		SELECT count(*) AS qtdRegistros
+			,'NOVAS' AS Tipo
+			,'FIXA' AS ORIGEM
+		FROM [DB_SISCOB].[FILE_CAR].[TB_TRATAMENTO_FIXA_WEB] TF
+		INNER JOIN [DB_SISCOB].[FILE_CAR].[TB_CAR_FIXA_IMPORT] FX ON TF.ID_IMPORT_FIXA = FX.ID
+		LEFT JOIN [DB_SISCOB].[CONSOLIDADO].[TB_CONSOLIDADO] C ON TF.PROCV = C.PROCV
+			AND TF.ID_TIPO = C.ID_TIPO
+			AND LEFT(C.SEG_DESCR, 3) = LEFT(TF.SEG_DESCR, 3)
+			AND ID_PERIODO = (
+				SELECT MAX(ID)
+				FROM [DB_SISCOB].[AUXILIAR].[TB_PERIODO]
+				)
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] FH ON TF.ID_FX_FECHO = FH.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] AR ON TF.ID_FX_ARRECADA = AR.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_TIPO] TP ON TF.ID_TIPO = TP.ID
+		WHERE TF.OK = 1
+			AND TF.CHECK_CAR IS NULL
+
+	-- [FIXA] - EXISTENTES
+
+	UNION
+
+		SELECT count(*) AS qtdRegistros
+			,'EXISTENTES' AS Tipo
+			,'FIXA' AS ORIGEM
+		FROM [DB_SISCOB].[CONSOLIDADO].[TB_CONSOLIDADO] TC
+		INNER JOIN [DB_SISCOB].[FILE_CAR].[TB_TRATAMENTO_FIXA_WEB] TF ON TC.PROCV = TF.PROCV
+			AND TC.ID_TIPO = TF.ID_TIPO
+			AND LEFT(TC.SEG_DESCR, 3) = LEFT(TF.SEG_DESCR, 3)
+		INNER JOIN [DB_SISCOB].[FILE_CAR].[TB_CAR_FIXA_IMPORT] FX ON TF.ID_IMPORT_FIXA = FX.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] FH ON TF.ID_FX_FECHO = FH.ID
+		LEFT JOIN [DB_SISCOB].[AUXILIAR].[TB_DESCRICAO_AGING] AR ON TF.ID_FX_ARRECADA = AR.ID
+		WHERE TF.OK = 1
+			AND TC.ID_SEGMENTO = 1
+			AND TC.ID_PERIODO = (
+				SELECT MAX(ID)
+				FROM [DB_SISCOB].[AUXILIAR].[TB_PERIODO]
+				) --<<<<<<<<<<<<<<<< PERIODO
+			AND TF.CHECK_CAR = 1
+			
+	-- [FIXA] - TOTAIS
+
+	UNION
+
+		SELECT CONCAT (
+				'-'
+				,count(*)
+				) AS qtdRegistros
+			,CASE ISNULL(CHECK_CAR, 0)
+				WHEN 0
+					THEN 'NOVAS'
+				WHEN 1
+					THEN 'EXISTENTES'
+				ELSE 'SEM CLASSIFICACAO'
+				END AS Tipo
+			,'FIXA' AS ORIGEM
+		FROM [DB_SISCOB].[FILE_CAR].[TB_TRATAMENTO_FIXA_WEB]
+		WHERE ok = 1
+		GROUP BY CHECK_CAR
+
+	*****/
+
+
+--################################################################################
+--################################################################################
+--################################################################################
+
+
+/***** LIBERAR PROCESSO DA FASE 02 
+
+	--INSERT INTO [BKP].[LOG_UPLOAD_FILE_CAR]
+	--	([FASE],[ETAPA],[DTSUBIDA])
+	--SELECT 
+	--	'UPLOAD_FILE_CAR_START_02' as tipo
+	--	,'OK' as objetivo
+	--	,GETDATE() as dt_subida;
+
+	*****/
+	
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

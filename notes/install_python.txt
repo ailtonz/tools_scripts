@@ -1,0 +1,12 @@
+pip install --upgrade pip wheel setuptools
+
+pip install docutils pygments pypiwin32 
+pip install kivy.deps.sdl2 
+pip install kivy.deps.glew
+
+pip install kivy.deps.gstreamer
+pip install kivy.deps.angle
+
+python -m pip install kivy
+
+https://www.lfd.uci.edu/~gohlke/pythonlibs/

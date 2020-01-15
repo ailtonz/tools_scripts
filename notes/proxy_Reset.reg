@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00 
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings]
+"AutoDetect"=dword:00000001
+"ProxyEnable"=dword:00000000
+"ProxyServer"=""
+"ProxyOverride"=""

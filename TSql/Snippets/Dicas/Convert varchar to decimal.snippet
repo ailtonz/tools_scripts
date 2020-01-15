@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>Convert varchar to decimal</Title>
+        <Shortcut></Shortcut>
+	<Description>Exemplo de cursor</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+-- Exemplo 01
+CONVERT(DECIMAL(18,2),REPLACE(REPLACE(ISNULL(@MyField,0),'.',''),',','.'))
+-- Exemplo 02
+CONVERT(DECIMAL(18,2),ISNULL(@MyField,0))
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

@@ -1,0 +1,11 @@
+create database 'c:\tmp\db_teste.fdb' PAGE_SIZE=4096 DEFAULT CARCTER SET WIN1252;
+
+
+
+
+
+
+CREATE DATABASE 'C:\tmp\db_teste.fdb'
+PAGE_SIZE=4096
+DEFAULT CHARACTER SET WIN1252
+USER 'sysdba' PASSWORD 'masterkey';

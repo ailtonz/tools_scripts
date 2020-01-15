@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>00 - CONTROLE LOG </Title>
+        <Shortcut></Shortcut>
+	<Description>Scripts prontos para auxilio no G-CA$H.</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+
+	SELECT *
+	FROM [DB_SISCOB].[BKP].[LOG_UPLOAD_FILE_CAR]
+	-- WHERE ETAPA = 'PRC_011_UPDATE_RESUMO_ATUAL'
+	ORDER BY ID DESC
+	
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

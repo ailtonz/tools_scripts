@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>02 - Registros Duplicados</Title>
+        <Shortcut></Shortcut>
+	<Description>Códigos para tratamento de faturas da movel.</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+			
+-- PROCV DUPLICADAS
+-- ##############################################################
+-- ##############################################################
+
+SELECT *
+FROM (
+	SELECT CONVERT(VARCHAR(200), CONCAT (
+				[PROCV]
+				,[ID_TIPO]
+				,[SEG_DESCR]
+				)) AS PROCV
+		,COUNT(1) AS QTD
+		,ID_TIPO
+	FROM [DB_SISCOB].[CONSOLIDADO].[TB_CONSOLIDADO]
+	WHERE ID_SEGMENTO = 1 --->> IDENTIFICAÇÃO FIXA
+		AND ID_PERIODO = (
+					SELECT MAX(ID)
+					FROM [DB_SISCOB].[AUXILIAR].[TB_PERIODO]
+					)
+	GROUP BY CONVERT(VARCHAR(200), CONCAT (
+				[PROCV]
+				,[ID_TIPO]
+				,[SEG_DESCR]
+				))
+		,ID_TIPO
+	) T
+WHERE T.QTD > 1
+
+
+-- EXCLUIR MAIOR ID DE FATURA DUPLICADAS
+-- ##############################################################
+-- ##############################################################
+
+SELECT *
+-- DELETE
+--INTO [DB_SISCOB].[BKP].[TB_CONSOLIDADO_20171006_2040_EXCLUSAO_DUPLICADOS] --->> BKP DE DADOS ANTES DA EXCLUSAO
+FROM [DB_SISCOB].[CONSOLIDADO].[TB_CONSOLIDADO]
+WHERE ID IN (
+		SELECT T.ULTIMO_ID
+		FROM (
+			SELECT CONVERT(VARCHAR(200), CONCAT (
+						[PROCV]
+						,[ID_TIPO]
+						,[SEG_DESCR]
+						)) AS PROCV
+				,COUNT(1) AS QTD
+				,MAX(ID) AS ULTIMO_ID
+			FROM [DB_SISCOB].[CONSOLIDADO].[TB_CONSOLIDADO]
+			WHERE ID_SEGMENTO = 1 --->> IDENTIFICAÇÃO FIXA
+				AND ID_PERIODO = (
+					SELECT MAX(ID)
+					FROM [DB_SISCOB].[AUXILIAR].[TB_PERIODO]
+					)
+			GROUP BY CONVERT(VARCHAR(200), CONCAT (
+						[PROCV]
+						,[ID_TIPO]
+						,[SEG_DESCR]
+						))
+				,ID_TIPO
+			) T
+		WHERE T.QTD > 1
+		)
+
+
+-- EXCLUIR MAIOR ID DE FATURA DUPLICADAS
+-- ##############################################################
+-- ##############################################################
+
+SELECT *
+-- DELETE
+--INTO [DB_SISCOB].[BKP].[TB_DADOS_E_VALORES_20171006_2040_EXCLUSAO_DUPLICADOS] --->> BKP DE DADOS ANTES DA EXCLUSAO
+FROM [DB_SISCOB].[CONSOLIDADO].[TB_DADOS_E_VALORES]
+WHERE [ID_CONSOLIDADO] IN (
+		SELECT T.ID
+		FROM [DB_SISCOB].[BKP].[TB_CONSOLIDADO_20171006_2040_EXCLUSAO_DUPLICADOS] T
+		)
+
+
+
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

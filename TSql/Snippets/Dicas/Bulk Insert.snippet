@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>Bulk Insert</Title>
+        <Shortcut></Shortcut>
+	<Description>Exemplo de Bulk Insert</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+	
+-- https://msdn.microsoft.com/pt-br/library/ms188365(v=sql.120).aspx	
+	
+	
+use DB_BANCO;
+GO
+
+DECLARE
+      @FILE_NAME VARCHAR(100),
+      @FILE_PATH VARCHAR(100),
+      @cmd varchar(1000)
+	  
+SET @FILE_NAME = 'arquivo.txt'
+SET @FILE_PATH = 'c:\tmp\'
+                                    
+SET @cmd = 'BULK INSERT [DB_BANCO].[DBO].[tmp__ARQUIVO]
+                  FROM ''' + @FILE_PATH+@FILE_NAME + '''
+                  WITH (      FIELDTERMINATOR = '';'',
+                                    FIRSTROW =2,
+                                    ROWTERMINATOR = '''+CHAR(10)+''')'
+EXEC(@cmd)  		 
+			  
+
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

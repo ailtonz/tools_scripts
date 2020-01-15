@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>APP LOG</Title>
+        <Shortcut></Shortcut>
+	<Description>Cadastro em tabela de log de antigos processos.</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+declare @Comando varchar(max);
+		
+SET QUOTED_IDENTIFIER OFF
+set @Comando = "
+
+"
+SET QUOTED_IDENTIFIER ON 
+
+INSERT INTO [ADM].[TB_APP_CONTROLE_LOG]
+        ([TIPO]
+        ,[DESCRICAO]
+        ,[DESCRICAO_02]
+        ,[DTSUBIDA]
+        ,[DESCRICAO_03])
+    SELECT 
+        'LOG_DELETE' as tipo
+        ,'Antigo processo de exportação de cenario' as objetivo
+        ,'[APP_WEB].[PRC_CENARIO]' as observação
+        ,GETDATE() as dt_subida
+        ,@Comando;
+
+		
+SELECT * FROM [DB_SISCOB].[ADM].[TB_APP_CONTROLE_LOG] ORDER BY ID DESC;
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>SHRINK FILE</Title>
+        <Shortcut></Shortcut>
+	<Description>SHRINK FILE</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+-- https://blog.sqlauthority.com/2011/01/02/sql-server-reduce-the-virtual-log-files-vlfs-from-ldf-file/
+
+--USE DB_SISCOB_MIS
+--GO
+--BACKUP LOG DB_SISCOB_MIS TO DISK='Z:\MIS_log.bak'
+--GO
+---- Get Logical file name of the log file
+--sp_helpfile
+--GO
+--DBCC SHRINKFILE(DB_SISCOB_MIS_log,TRUNCATEONLY)
+--GO
+--ALTER DATABASE DB_SISCOB_MIS
+--MODIFY FILE
+--(NAME = DB_SISCOB_MIS_log,SIZE = 1GB)
+--GO
+--DBCC LOGINFO
+--GO
+
+
+
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

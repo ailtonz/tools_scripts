@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>Cursor</Title>
+        <Shortcut></Shortcut>
+	<Description>Exemplo de cursor</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+
+			
+	--- #######################################
+	--- ### DESLIGAR JOB'S
+	--- #######################################
+	DECLARE @Cmd VARCHAR(3000)
+			,@FILE_NAME varchar(255);
+
+	-- Cursor para percorrer os nomes dos objetos 
+	DECLARE objHistory CURSOR	FOR	SELECT
+			distinct 
+			name
+	FROM
+		msdb.dbo.sysjobs job
+	INNER JOIN 
+		msdb.dbo.sysjobsteps steps        
+	ON
+		job.job_id = steps.job_id
+	WHERE
+		--job.enabled = 1 -- remove this if you wish to return all jobs
+		--and 
+		name like 'db_siscob - 2%'
+	order by name;
+
+	-- Abrindo Cursor para leitura
+	OPEN objHistory
+
+	-- Lendo a próxima linha
+	FETCH NEXT
+	FROM objHistory
+	INTO @FILE_NAME
+	
+
+	-- Percorrendo linhas do cursor (enquanto houverem)
+	WHILE @@FETCH_STATUS = 0
+	BEGIN	
+	
+		EXEC msdb.dbo.sp_update_job @job_name=@FILE_NAME,@enabled = 0
+		print @FILE_NAME;
+
+		waitfor delay '00:00:00.3'
+
+		-- Lendo a próxima linha
+		FETCH NEXT
+		FROM objHistory
+		INTO @FILE_NAME
+	
+	END
+
+	-- Fechando Cursor para leitura
+	CLOSE objHistory
+
+	-- Desalocando o cursor
+	DEALLOCATE objHistory
+
+			  
+
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>01 - Pos validação </Title>
+        <Shortcut></Shortcut>
+	<Description>Pos validação.</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+
+use DB_SISCOB
+go
+
+/****** CADASTRO DE CONTROLE  -- Administração da tabela de controle de app's auxiliares as sistema -- ******/
+	
+
+DECLARE @TMP VARCHAR(MAX)=(
+    SELECT DESCRICAO_03
+    FROM [DB_SISCOB].[ADM].[TB_APP_CONTROLE]
+    WHERE TIPO LIKE '%FILE_CAR%' AND DESCRICAO_02 = 'SALDO_CAR_14 - CONSULTA DE PÓS VALIDAÇÃO '
+    )
+	
+	PRINT @TMP		
+
+	
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

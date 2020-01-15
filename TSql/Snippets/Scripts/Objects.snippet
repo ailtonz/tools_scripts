@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>Listar Objects</Title>
+        <Shortcut></Shortcut>
+	<Description>Listar Objects para gerar scripts</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+
+SELECT 'SELECT * INTO DB_SISCOB_BKP.BKP.' + NAME + '  FROM db_siscob.transito.' + NAME
+FROM sys.objects
+WHERE type = 'u'
+	AND NAME LIKE '%tmp__%BASE_ITX_%'
+	--AND NAME NOT LIKE (
+	--	SELECT TOP 1 NAME
+	--	FROM sys.objects
+	--	WHERE type = 'u'
+	--		AND NAME LIKE 'TB_CONSUMO_SISCOB'
+	--	ORDER BY create_date DESC
+	--	)
+	AND SCHEMA_ID = SCHEMA_ID(N'transito')
+ORDER BY NAME
+
+
+SELECT 'DROP TABLE db_siscob.transito.' + NAME
+FROM sys.objects
+WHERE type = 'u'
+	AND NAME LIKE '%tmp__%BASE_ITX_%'
+	--AND NAME NOT LIKE (
+	--	SELECT TOP 1 NAME
+	--	FROM sys.objects
+	--	WHERE type = 'u'
+	--		AND NAME LIKE 'TB_CONSUMO_SISCOB'
+	--	ORDER BY create_date DESC
+	--	)
+	AND SCHEMA_ID = SCHEMA_ID(N'transito')
+ORDER BY NAME
+
+
+-- consultar existencia de tabela
+-- if object_id (N'base2$') is not null select 1 as res else select 0 as res;
+
+
+	
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

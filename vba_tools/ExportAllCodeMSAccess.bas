@@ -39,6 +39,8 @@ Public Sub ExportAllCode()
         End If
     Next c
 
+MsgBox "Created source files in " & CurrentProject.Path & sFileName
+
 End Sub
 
 

@@ -1,0 +1,6 @@
+Windows Registry Editor Version 5.00 
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings]
+"AutoDetect"=dword:00000000
+"ProxyEnable"=dword:00000001
+"ProxyServer"="http://proxy.sclientebr.corp:80"
+"ProxyOverride"="127.0.0.1;localhost;*.gsb;22*;180*;*.sb;*corp;*bssh;*rpm"

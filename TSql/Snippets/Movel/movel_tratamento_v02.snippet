@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<_locDefinition xmlns="urn:locstudio">
+    <_locDefault _loc="locNone" />
+    <_locTag _loc="locData">Title</_locTag>
+    <_locTag _loc="locData">Description</_locTag>
+    <_locTag _loc="locData">Author</_locTag>
+    <_locTag _loc="locData">ToolTip</_locTag>
+</_locDefinition>
+	<CodeSnippet Format="1.0.0">
+	<Header>
+	<Title>Tratamento de faturas - v02</Title>
+        <Shortcut></Shortcut>
+	<Description>Códigos para tratamento de faturas da movel.</Description>
+	<Author>Ailton Zacarias</Author>
+	<SnippetTypes>
+		<SnippetType>Expansion</SnippetType>
+	</SnippetTypes>
+	</Header>
+	<Snippet>
+		<Declarations></Declarations>
+		<Code Language="SQL">
+			<![CDATA[
+			
+DECLARE @Contas TABLE
+(
+Conta varchar(255) 
+)
+
+INSERT INTO @Contas (Conta)
+SELECT *
+FROM (
+	VALUES 
+	 ('0269759669')
+	 ,('0269902895')
+	 ,('0270516782')
+	 ,('0275789450')
+	 ,('0280682480')
+	 ,('0284437352')
+	 ,('0291474403')
+	 ,('0305400676')
+	 ,('2060912160')
+	 ,('2133864107')
+	 ,('2142559756')
+	 ,('0287959939')
+	 ,('2135543075')
+	 ,('2040503421')
+	 ,('0111164749')
+	 ,('0132065187')
+	 ,('0259163856')
+	 ,('2017225591')
+	 ,('0249893424')
+	 ,('0297463158')
+	 ,('0286699784')
+	) AS list(item)
+
+
+/*SELEÇÃO DE REGISTROS*/
+SELECT t.id
+	,t.FORNECEDOR AS FORNECEDOR_ANTIGO
+	,NULL AS FORNECEDOR_NOVO
+	,GETDATE() AS DT_UPDATE
+	,'Favor alterar os casos abaixo para fornecedor nulo'
+/*UPDATE DE REGISTROS*/
+--UPDATE t set t.FORNECEDOR = null
+FROM [DB_SISCOB].[FILE_CAR].[TB_TRATAMENTO_MOVEL_WEB] t
+INNER JOIN [DB_SISCOB].[FILE_CAR].[TB_CAR_MOVEL_IMPORT] c ON t.ID_IMPORT_MOVEL = c.ID
+--WHERE t.fornecedor = 'MASTER'
+WHERE c.conta IN (
+		SELECT *
+		FROM @Contas
+		)
+	AND t.OK = 1
+
+/*SELEÇÃO DE REGISTROS*/
+SELECT --t.id
+	t.FORNECEDOR AS FORNECEDOR_ANTIGO
+	,NULL AS FORNECEDOR_NOVO
+	,GETDATE() AS DT_UPDATE
+	,'Favor alterar os casos abaixo para fornecedor nulo'
+/*UPDATE DE REGISTROS*/
+--UPDATE t set t.FORNECEDOR = null
+FROM [DB_SISCOB].[AUXILIAR].[VW_VIVO_CARTEIRA] t
+--WHERE t.fornecedor = 'MASTER'
+WHERE t.CONTA IN (
+		SELECT *
+		FROM @Contas
+		)
+
+
+
+]]>
+		</Code>
+	</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
+

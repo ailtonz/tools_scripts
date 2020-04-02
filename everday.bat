@@ -1,7 +1,4 @@
-REM Aplicativos
-
-idea64.exe
-notepadpp.exe
+REM Notas pessoais
 for %%1 in (*.txt) do start notepadpp "%%1"
 
 REM Leitura
@@ -20,4 +17,7 @@ for %%1 in (*.pptx) do start powerpnt "%%1"
 for %%1 in (*.txt) do start notepadpp "%%1"
 for %%1 in (*.mm) do start FreeMind "%%1"
 explorer .
+
+REM Aplicativos
+idea64.exe
 pause

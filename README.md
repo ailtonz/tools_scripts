@@ -1,5 +1,5 @@
-# vba_Ajudinha
-Scripts modelos em vba
+# Links de modelos e exemplos
+Pesquisas realizadas nestes tópicos
 
 
 * [Redis](https://github.com/ailtonz/tools_scripts/blob/master/Redis.md)

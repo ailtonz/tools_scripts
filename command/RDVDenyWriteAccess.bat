@@ -1,1 +1,0 @@
-reg add "HKLM\SYSTEM\CurrentControlSet\Policies\Microsoft\FVE" /f /v RDVDenyWriteAccess /t REG_DWORD /d 0

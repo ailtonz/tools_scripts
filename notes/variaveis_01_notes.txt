@@ -1,5 +1,0 @@
-%HOME_7z%
-%HOME_EDITORES%\Notepad++
-%HOME_FILES%\TreeSizeFreePortable
-%HOME_SCRIPTS%
-%HOME_WEB%\FirefoxPortable

@@ -1,3 +1,0 @@
-gacutil -u FluentFTP
-gacutil -i c:\windows\FluentFTP.dll
-gacutil -l FluentFTP

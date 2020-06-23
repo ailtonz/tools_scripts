@@ -1,1 +1,0 @@
-explorer C:\Users\ailtonsilva\Documents\Lightshot

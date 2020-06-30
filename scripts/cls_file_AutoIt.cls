@@ -88,6 +88,9 @@ LockScreen True
     Dim pathApp As String: pathApp = strApp & " " & strFilePath & tempFileName
     Shell pathApp
     
+    '' Kill tempFileName
+    If (Dir(strFilePath & tempFileName) <> "") Then Kill strFilePath & tempFileName
+    
 
 LockScreen False
 
@@ -132,6 +135,9 @@ LockScreen True
 
     Dim pathApp As String: pathApp = strApp & " " & strFilePath & strFileName
     Shell pathApp
+    
+    '' Kill strFileName
+    If (Dir(strFilePath & strFileName) <> "") Then Kill strFilePath & strFileName
 
 
 LockScreen False

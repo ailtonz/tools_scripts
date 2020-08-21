@@ -482,9 +482,9 @@ Private Function json_ParseObject(json_String As String, ByRef json_Index As Lon
             json_Key = json_ParseKey(json_String, json_Index)
             json_NextChar = json_Peek(json_String, json_Index)
             If json_NextChar = "[" Or json_NextChar = "{" Then
-                Set json_ParseObject.item(json_Key) = json_ParseValue(json_String, json_Index)
+                Set json_ParseObject.Item(json_Key) = json_ParseValue(json_String, json_Index)
             Else
-                json_ParseObject.item(json_Key) = json_ParseValue(json_String, json_Index)
+                json_ParseObject.Item(json_Key) = json_ParseValue(json_String, json_Index)
             End If
         Loop
     End If
@@ -1121,3 +1121,115 @@ Private Function utc_SystemTimeToDate(utc_Value As utc_SYSTEMTIME) As Date
 End Function
 
 #End If
+
+''==[ EXTRACAO ]==========================================================================================================
+
+Sub tools_jsonContatos() '' Criar arquivo .json com dados na guia contatos
+Dim jsonItems As New Collection
+Dim jsonDictionary As New Dictionary
+Dim jsonFileObject As New FileSystemObject
+Dim jsonFileExport As TextStream
+
+'' Worksheet
+Dim ws As Worksheet: Set ws = Worksheets("DOC_contatos")
+Dim lRow As Long, x As Long, t As Variant, tmp As String: tmp = ""
+Dim ColumnIndex  As Integer: ColumnIndex = 2
+lRow = ws.Cells(Rows.Count, ColumnIndex).End(xlUp).Offset(1, 0).Row
+
+'' Source
+Dim pathSource As String: pathSource = CreateObject("WScript.Shell").SpecialFolders("Desktop")
+Dim pathExit As String: pathExit = pathSource & "\" & ActiveSheet.Name & ".json"
+If (Dir(pathExit) <> "") Then Kill pathExit
+
+    For i = 2 To lRow - 1
+        jsonDictionary("area") = CStr(Trim(ws.Range("B" & i).Value))
+        jsonDictionary("nome") = CStr(Trim(ws.Range("C" & i).Value))
+        jsonDictionary("email") = CStr(Trim(ws.Range("D" & i).Value))
+        jsonDictionary("obs") = CStr(Trim(ws.Range("E" & i).Value))
+        
+        jsonItems.add jsonDictionary
+        Set jsonDictionary = Nothing
+    
+    Next i
+    
+    Set jsonFileExport = jsonFileObject.CreateTextFile(pathExit, True)
+    jsonFileExport.WriteLine (JsonConverter.ConvertToJson(jsonItems, Whitespace:=3))
+
+End Sub
+
+Sub tools_jsonTraining()
+Dim jsonItems As New Collection
+Dim jsonDictionary As New Dictionary
+Dim jsonFileObject As New FileSystemObject
+Dim jsonFileExport As TextStream
+
+'' Worksheet
+Dim ws As Worksheet: Set ws = Worksheets("training")
+Dim lRow As Long, x As Long, t As Variant, tmp As String: tmp = ""
+Dim ColumnIndex  As Integer: ColumnIndex = 2
+Dim RowIndex  As Integer: RowIndex = 2
+lRow = ws.Cells(Rows.Count, ColumnIndex).End(xlUp).Offset(1, 0).Row
+
+'' Source
+Dim pathSource As String: pathSource = CreateObject("WScript.Shell").SpecialFolders("Desktop")
+Dim pathExit As String: pathExit = pathSource & "\" & ActiveSheet.Name & ".json"
+If (Dir(pathExit) <> "") Then Kill pathExit
+
+For i = RowIndex To lRow - 1
+
+    jsonDictionary("categoria") = CStr(Trim(ws.Range("C" & i).Value))
+    jsonDictionary("descricao") = CStr(Trim(ws.Range("D" & i).Value))
+    jsonDictionary("link") = CStr(Trim(ws.Range("E" & i).Value))
+    jsonDictionary("conta") = CStr(Trim(ws.Range("F" & i).Value))
+    jsonDictionary("senha") = CStr(Trim(ws.Range("G" & i).Value))
+
+    jsonItems.add jsonDictionary
+    Set jsonDictionary = Nothing
+
+Next i
+
+Set jsonFileExport = jsonFileObject.CreateTextFile(pathExit, True)
+jsonFileExport.WriteLine (JsonConverter.ConvertToJson(jsonItems, Whitespace:=3))
+
+Shell "notepad.exe " & pathExit, vbMaximizedFocus
+'If (Dir(pathExit) <> "") Then Kill pathExit
+
+End Sub
+
+Sub tools_jsonLinks()
+'' Json
+Dim jsonItems As New Collection
+Dim jsonDictionary As New Dictionary
+Dim jsonFileObject As New FileSystemObject
+Dim jsonFileExport As TextStream
+
+'' Worksheet
+Dim ws As Worksheet: Set ws = Worksheets("links")
+Dim lRow As Long: lRow = ws.Cells(Rows.Count, 2).End(xlUp).Offset(1, 0).Row
+
+'' Source
+Dim pathSource As String: pathSource = CreateObject("WScript.Shell").SpecialFolders("Desktop")
+Dim pathExit As String: pathExit = pathSource & "\" & ActiveSheet.Name & ".json"
+Dim i As Integer: i = 2
+Dim t As Variant
+
+If (Dir(pathExit) <> "") Then Kill pathExit
+
+    '' Build file text
+    For Each t In ws.Range("C2:C" & lRow).SpecialCells(xlCellTypeVisible)
+        jsonDictionary("descricao") = CStr(Trim(ws.Range("E" & i).Value))
+        jsonDictionary("link") = CStr(Trim(ws.Range("C" & i).Value))
+        jsonItems.add jsonDictionary
+        Set jsonDictionary = Nothing
+        i = i + 1
+    Next
+    
+    '' Build script
+    Set jsonFileExport = jsonFileObject.CreateTextFile(pathExit, True)
+    jsonFileExport.WriteLine (JsonConverter.ConvertToJson(jsonItems, Whitespace:=3))
+    
+    Shell "notepad.exe " & pathExit, vbMaximizedFocus
+    
+End Sub
+
+

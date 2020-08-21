@@ -888,3 +888,108 @@ Attribute VB_Name = "teste_conceito"
 'End Sub
 
 
+
+
+
+'Sub send_communication_current(ByVal control As IRibbonControl) '' Enviar e-mail com posição da tarefa atual
+''' Worksheet
+'Dim ws As Worksheet: Set ws = Worksheets(ActiveSheet.Name)
+'Dim eMail As New clsOutlook
+'
+''' Principal
+'Dim strFiltro As String: strFiltro = Etiqueta("eMail_Search")
+'Dim strTo As String: strTo = Etiqueta("eMail_To")
+'Dim strCC As String: strCC = Etiqueta("eMail_CC")
+'Dim strSubject As String: strSubject = Etiqueta("eMail_Subject")
+'
+'
+''' Confirmação de envio de e-mail
+'Dim sTitle As String:       sTitle = ws.Range(Etiqueta("robot_02_Name")).Value
+'Dim sMessage As String:     sMessage = "Deseja enviar e-mail com posição da tarefa atual ?"
+'Dim resposta As Variant
+'
+''' criar tmp_file apenas para apresentacao
+'Dim pathExit As String: pathExit = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\tmp_file" & ".txt"
+'If (Dir(pathExit) <> "") Then Kill pathExit
+'
+''' linhas e colunas
+'Dim lRow As Long: lRow = ws.Cells(Rows.Count, ColumnIndex).End(xlUp).Row
+'Dim linha As Long: linha = InicioDaPesquisa
+'
+'    strBody = ""
+'
+'    With eMail
+'
+'        '' To
+'        .strTo = strTo
+'        .strCC = strCC
+'        .strSubject = strSubject
+'
+'        '' Subject
+'        For Each cell In ws.Range("$" & ColunaTarefa & "$" & linha & ":$" & ColunaTarefa & "$" & lRow)
+'            If InStr(ws.Range("$" & ColunaStatus & "$" & linha).Value, ws.Range(strFiltro).Value) <> 0 Then
+'                If (Len(cell.Value) > 0) Then strBody = strBody & cell.Value & vbNewLine
+'            End If
+'            linha = linha + 1
+'        Next cell
+'
+'        '' Send
+'        .strBody = strBody
+'
+'        '' Apresentação
+'        TextFile_Append pathExit, strTo & vbNewLine
+'        TextFile_Append pathExit, strCC & vbNewLine
+'        TextFile_Append pathExit, ws.Range(strSubject).Value & vbNewLine
+'        TextFile_Append pathExit, strBody
+'        Shell "notepad.exe " & pathExit, vbMaximizedFocus
+'        Kill pathExit
+'
+'        resposta = MsgBox(sMessage, vbQuestion + vbYesNo, sTitle)
+'        If (resposta = vbYes) Then
+'            .EnviarEmail
+'            MsgBox "Concluido!", vbInformation + vbOKOnly, sTitle
+'        End If
+'
+'    End With
+'
+'End Sub
+'
+'Sub open_List_Tasks(ByVal control As IRibbonControl) '' listar tarefas
+''' Worksheet
+'Dim ws As Worksheet: Set ws = Worksheets(ActiveSheet.Name)
+'Dim cSaida As New Collection
+'
+''' Principal
+'Dim strFiltro As String: strFiltro = Etiqueta("eMail_Search")
+'
+''' criar tmp_file apenas para apresentacao
+'Dim pathExit As String: pathExit = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\tmp_file" & ".txt"
+'If (Dir(pathExit) <> "") Then Kill pathExit
+'
+'Dim t As Variant
+'Dim tmp As String: tmp = ""
+'
+'    For Each ws In Worksheets
+'        If ws.Visible = xlSheetVisible Then
+'            If (ws.Name <> Etiqueta("wbk_Modelo") And ws.Name <> Etiqueta("wbk_vms")) Then
+'                cSaida.add ws.Name & vbTab & ws.Range(strFiltro).Value & vbNewLine
+'            End If
+'        End If
+'    Next
+'
+'    For Each t In cSaida
+'        tmp = tmp & t
+'    Next
+'
+'    TextFile_Append pathExit, tmp
+'
+'    ClipBoardThis tmp
+'
+'    MsgBox "O conteudo tambem foi copiado para o ClipBoard ", vbInformation + vbOKOnly, "Concluido!"
+'
+'    Shell "notepad.exe " & pathExit, vbMaximizedFocus
+'
+'    Kill pathExit
+'
+'End Sub
+

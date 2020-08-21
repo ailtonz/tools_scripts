@@ -24,8 +24,6 @@ Property Let strNotes(pValue As String):     sNotes = pValue:               End 
 Property Get strPath() As String:           strPath = sPath:          End Property
 Property Let strPath(pValue As String):     sPath = pValue:               End Property
 
-
-
 Private Sub Class_Initialize()
     Set pCol = New Collection
 End Sub

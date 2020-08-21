@@ -131,6 +131,13 @@ Public Enum enDriverODBC
     drExcel_8 = 3
     drSqlite = 4
 End Enum
+Public Enum enumOperacao
+    opNome = 0
+    opExecutar = 1
+    opNotepad = 2
+End Enum
+
+
 
 ' VARIABLES DECLARATIONS =============================================================================================
 'Public clsUser                              As New User
@@ -150,6 +157,10 @@ Public Const DATE_FORMAT                    As String = "dd/mm/yy"
 Public sql                                  As String
 Public i                                    As Integer
 Public j                                    As Integer
+'Private Const pathSource As String = "C:\Temp\"
+Private Const pathSource As String = "E:\APP"
+' VARIABLES DECLARATIONS =============================================================================================
+
 Public Function MonthName(pMonthNumber As Integer, Optional pLanguage As enumLanguage) As String
 '=====================================================================================================================
 ' Procedure    : MonthName
@@ -287,7 +298,7 @@ Public Function Contains(pCollection As Collection, pKey As Variant) As Boolean
 '   - pKey As Variant
 '=====================================================================================================================
     On Error GoTo NoSuchKey
-    If VarType(pCollection.item(pKey)) = vbObject Then
+    If VarType(pCollection.Item(pKey)) = vbObject Then
     End If
     Contains = True
     Exit Function
@@ -816,7 +827,7 @@ Public Function TextFile_GetRowCount(pFileFullPath As String) As Long
     Set fso = CreateObject("Scripting.FileSystemObject")
     Set theFile = fso.OpenTextFile(pFileFullPath, 8, True)
     TextFile_GetRowCount = theFile.Line
-    Set oFso = Nothing
+    Set oFSO = Nothing
     theFile.Close
     Set theFile = Nothing
 End Function
@@ -1005,6 +1016,7 @@ Public Function TextFile_ReadToCollection(pFilePath As String) As Collection
     Set TextFile_ReadToCollection = colResult
     
 End Function
+
 Public Function GetFolder() As String
 
 Dim fldr As FileDialog
@@ -1033,24 +1045,13 @@ If err.Number <> 0 Then Etiqueta = "#N/A"
 On Error GoTo 0
 End Function
 
-Public Function CreateDir(strPath As String)
-    Dim elm As Variant
-    Dim strCheckPath As String
-
-    strCheckPath = ""
-    For Each elm In Split(strPath, "\")
-        strCheckPath = strCheckPath & elm & "\"
-        If Len(Dir(strCheckPath, vbDirectory)) = 0 Then MkDir strCheckPath
-    Next
-End Function
-
 Public Function UserName() As String ' %HOMEPATH%\Downloads
 
     UserName = CreateObject("WScript.Network").UserName
 
 End Function
 
-Private Sub LimparBase()
+Private Sub limparBase()
 Dim ws As Worksheet
 
 Dim sTitle As String:       sTitle = "Limpar base"
@@ -1071,7 +1072,48 @@ Worksheets(Etiqueta("wbk_Modelo")).Select
 
 End Sub
 
-Private Sub listarGuias()
+Sub ClipBoardListFiles()
+Dim strTemp As String
+
+    For Each t In PickFiles("Seleção de arquivos para ClipBoard", pMultiselect:=True)
+        strTemp = strTemp & t & vbNewLine
+    Next
+    ClipBoardThis Left(strTemp, Len(strTemp) - 1)
+End Sub
+
+Public Sub ClearCollection(ByRef container As Collection)
+    Dim index As Long
+    For index = 1 To container.Count
+        container.Remove 1
+    Next
+End Sub
+ 
+Public Function execucao(pCol As Collection, strFileName As String, Optional strFilePath As String, Optional pOperacao As enumOperacao, Optional strApp As String) 'runUrl.au3
+Dim c As Variant
+LockScreen True
+    
+    '' Path
+    If ((strFilePath) = "") Then strFilePath = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\"
+    If (Dir(strFilePath & strFileName) <> "") Then Kill strFilePath & strFileName
+    
+    '' Criação
+    For Each c In pCol
+        TextFile_Append strFilePath & strFileName, CStr(c)
+    Next c
+    
+    Dim pathApp As String: pathApp = strApp & " " & strFilePath & strFileName
+    Select Case pOperacao
+        Case opExecutar
+            Shell pathApp
+        Case opNotepad
+            Shell pathApp, vbMaximizedFocus
+        Case Else
+    End Select
+    
+LockScreen False
+End Function
+
+Sub tools_listarGuias()
 Dim ws As Worksheet
 
 Dim sTitle As String:       sTitle = "Listar guias"
@@ -1085,3 +1127,300 @@ If (resposta = vbYes) Then
 End If
 
 End Sub
+
+Sub tools_limparBase()
+Dim colNews As New Collection
+Dim strTemp As String
+
+colNews.add "SRV_"
+'colNews.add "DOC_"
+
+    For Each ws In Worksheets
+        For Each c In colNews
+            If InStr(ws.Name, c) Then
+                strTemp = strTemp & ws.Name & vbNewLine
+                clearDate ws.Name
+            End If
+        Next
+    Next
+
+    Debug.Print strTemp
+    'ClipBoardThis Left(strTemp, Len(strTemp) - 1)
+
+    MsgBox "Concluido!", vbOKOnly + vbInformation, "List items"
+
+End Sub
+
+Private Sub clearDate(strWorksheet As String)
+Dim ws As Worksheet: Set ws = Worksheets(strWorksheet)
+    ws.Activate
+    ws.Rows("2:2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.Delete Shift:=xlUp
+    ws.Range("A2").Select
+End Sub
+
+Sub tools_copyEmailsReport()
+Dim strTemp As String
+Dim t As Variant
+
+    For Each t In Range(Etiqueta("eMails")).Value
+        strTemp = strTemp & t & ";"
+    Next
+    
+    ClipBoardThis Left(strTemp, Len(strTemp) - 1)
+    
+    MsgBox "Copiado!", vbOKOnly + vbInformation, "toolsCopyEmailsReport"
+
+End Sub
+
+Sub tools_createFileTxt()
+'' Worksheet
+Dim ws As Worksheet: Set ws = Worksheets(ActiveSheet.Name)
+Dim lRow As Long, x As Long: lRow = ws.Cells(Rows.Count, 2).End(xlUp).Offset(1, 0).Row
+
+'' Source
+Dim pathExit As String: pathExit = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\" & ActiveSheet.Name & ".txt"
+If (Dir(pathExit) <> "") Then Kill pathExit
+
+'' Additional
+Dim t As Variant, cSaida As New Collection, tmp As String: tmp = ""
+    
+    For x = 2 To lRow - 1
+        cSaida.add CStr(ws.Range("C" & x).Value) & vbNewLine
+    Next x
+
+    For Each t In cSaida
+        tmp = tmp & t
+    Next
+    
+    TextFile_Append pathExit, tmp
+    
+    ClipBoardThis tmp
+
+    Shell "notepad.exe " & pathExit, vbMaximizedFocus
+
+End Sub
+
+Sub tools_createFileNew()
+
+'' Worksheet
+Dim ws As Worksheet: Set ws = Worksheets(ActiveSheet.Name)
+
+'' Source
+Dim pathExit As String: pathExit = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\" & ActiveSheet.Name & ".xlsx"
+If (Dir(pathExit) <> "") Then Kill pathExit
+
+    ws.Copy
+    ActiveWorkbook.SaveAs Filename:=pathExit, FileFormat:=xlOpenXMLWorkbook, CreateBackup:=False
+End Sub
+
+Sub tools_createScriptBkp()
+Dim colNews As New Collection
+Dim s As New clsRepositorio: s.batBkp colNews
+    execucao colNews, "backup.bat", strApp:="Notepad.exe", pOperacao:=opNotepad
+End Sub
+
+Sub tools_createScriptMouse()
+Dim colNews As New Collection
+Dim s As New clsRepositorio: s.mouse colNews
+    execucao colNews, "mouse.au3", strApp:=Etiqueta("appAutoIt"), pOperacao:=opExecutar
+End Sub
+
+Sub tools_createScript()
+'' to-do: corrigir nome do arquivo criado
+'' to-do: corrigir pulo de linha
+
+'' Worksheet
+Dim ws As Worksheet: Set ws = Worksheets("dbScripts")
+Dim lRow As Long: lRow = ws.Cells(Rows.Count, 2).End(xlUp).Offset(1, 0).Row
+
+'' Source
+Dim pathSource As String: pathSource = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\"
+Dim pathExit As String: pathExit = pathSource
+Dim fileOld As Boolean: fileOld = True
+
+'' Additional
+Dim x As Long, t As Variant, tmp As String: tmp = ""
+
+    '' Build file text
+    x = 2
+    For Each t In ws.Range("C2:C" & lRow).SpecialCells(xlCellTypeVisible)
+        If fileOld Then pathExit = pathExit & ws.Range("B" & x) & ".txt"
+        If (Dir(pathExit) <> "" And fileOld) Then Kill pathExit
+        If t <> "" Then
+            tmp = tmp & t & vbNewLine
+            TextFile_Append pathExit, tmp
+            fileOld = False
+        End If
+        x = x + 1
+    Next
+    
+    MsgBox "Concluido!", vbOKOnly + vbInformation, "create_Script"
+
+End Sub
+
+Sub tools_createRunUrls()
+'' Carregar links filtrados ou não de guia atual
+'' Worksheet
+Dim ws As Worksheet: Set ws = Worksheets(ActiveSheet.Name)
+Dim lRow As Long: lRow = ws.Cells(Rows.Count, 2).End(xlUp).Offset(1, 0).Row
+ 
+'' Additional
+Dim t As Variant
+Dim colNews As New Collection
+Dim s As New clsRepositorio
+ 
+    '' Criar arquivo auxiliar
+    For Each t In ws.Range("C2:C" & lRow - 1).SpecialCells(xlCellTypeVisible)
+        colNews.add Trim(t)
+    Next
+    execucao colNews, ActiveSheet.Name & ".txt"
+ 
+    '' Executar script
+    ClearCollection colNews
+    s.Url colNews
+    execucao colNews, ActiveSheet.Name & ".au3", strApp:=Etiqueta("appAutoIt"), pOperacao:=opExecutar
+ 
+End Sub
+ 
+Sub tools_createRunTema()
+On Error Resume Next
+Dim oFSO: Set oFSO = CreateObject("Scripting.FileSystemObject")
+
+'' Source
+Dim pathExit As String: pathExit = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\"
+Dim strFolderName As String: strFolderName = Year(Now()) & Format(Month(Now()), "00") & Format(Day(Now()), "00") & "_"
+
+'' Folder
+Dim strExecucao As Variant
+Dim strTema As String
+Dim strTemaCaminho As String
+
+strExecucao = MsgBox("Deseja criar um novo tema?", vbQuestion + vbYesNo, "Tema")
+If strExecucao = vbYes Then
+    '' Create folder
+    strTema = InputBox("Qual o Tema?", "Tema")
+    If strTema <> "" Then oFSO.CreateFolder pathExit & strFolderName & strTema
+    
+    strTemaCaminho = pathExit & strFolderName & strTema
+Else
+    strTemaCaminho = pathExit
+End If
+
+'' Open folder
+Shell "explorer.exe " & strTemaCaminho, vbMaximizedFocus
+
+ClipBoardThis strTemaCaminho
+
+End Sub
+
+
+Sub run_FirefoxPortable()
+    Dim pathApp As String: pathApp = pathSource & "\FirefoxPortable\FirefoxPortable.exe": Shell pathApp
+End Sub
+
+Sub run_HeidiSQL()
+    Dim pathApp As String: pathApp = pathSource & "\HeidiSQL_7.0\heidisql.exe": Shell pathApp
+End Sub
+
+Sub run_Notepadpp()
+    Dim pathApp As String: pathApp = pathSource & "\npp.7.8.2.bin.x64\notepadpp.exe": Shell pathApp
+End Sub
+
+Sub run_Eclipse()
+    Dim pathApp As String: pathApp = pathSource & "\eclipse-java-2020-03-R-win32-x86_64\eclipse\eclipse.exe": Shell pathApp
+End Sub
+
+Sub run_PostmanPortable()
+    Dim pathApp As String: pathApp = pathSource & "\eclipse-java-2020-03-R-win32-x86_64\postman-portable\postman-portable.exe": Shell pathApp
+End Sub
+
+Sub run_SoapUIPortable()
+    Dim pathApp As String: pathApp = pathSource & "\eclipse-java-2020-03-R-win32-x86_64\SoapUIPortable\SoapUIPortable.exe": Shell pathApp
+End Sub
+
+Sub run_Putty()
+    Dim pathApp As String: pathApp = pathSource & "\PsTools\putty.exe": Shell pathApp
+End Sub
+
+Sub run_VLCPortable()
+    Dim pathApp As String: pathApp = pathSource & "\VLCPortable\VLCPortable.exe": Shell pathApp
+End Sub
+
+Sub run_kill()
+'Dim pathExit As String: pathExit = CreateObject("WScript.Shell").SpecialFolders("Desktop") & "\"
+'Dim colNews As New Collection
+'Dim c, f As Variant
+'
+'colNews.add ".au3"
+'colNews.add ".txt"
+'colNews.add ".xml"
+''colNews.add ".xlsx"
+'
+'    For Each f In GetFilesInFolder(pathExit)
+'        For Each c In colNews
+'            If (Dir(pathExit) <> "") And InStr(f, c) Then kill f
+'        Next
+'    Next f
+
+End Sub
+
+
+Sub tools_ExportAllCode_EXCEL() '' Extracao de codigos do projeto
+'' https://stackoverflow.com/questions/16948215/exporting-ms-access-forms-and-class-modules-recursively-to-text-files
+
+    AddRefGuid
+
+    Dim c As VBComponent
+    Dim Sfx As String
+    Dim sFileName As String: sFileName = "\" & Left(ThisWorkbook.Name, (InStrRev(ThisWorkbook.Name, ".", -1, vbTextCompare) - 1))
+
+    For Each c In Application.VBE.VBProjects(1).VBComponents
+        Select Case c.Type
+            Case vbext_ct_ClassModule, vbext_ct_Document
+                Sfx = ".cls"
+            Case vbext_ct_MSForm
+                Sfx = ".frm"
+            Case vbext_ct_StdModule
+                Sfx = ".bas"
+            Case Else
+                Sfx = ""
+        End Select
+
+        If Sfx <> "" Then
+
+            '''' EXCEL
+            CreateDir Application.ActiveWorkbook.Path & sFileName & "\code\"
+            c.Export Filename:=Application.ActiveWorkbook.Path & sFileName & "\code\" & c.Name & Sfx
+            
+        End If
+    Next c
+        MsgBox "Created source files in " & Application.ActiveWorkbook.Path & sFileName
+End Sub
+
+
+Private Function CreateDir(strPath As String) '' Criar estrutura de diretorios
+    Dim elm As Variant
+    Dim strCheckPath As String
+
+    strCheckPath = ""
+    For Each elm In Split(strPath, "\")
+        strCheckPath = strCheckPath & elm & "\"
+        If Len(Dir(strCheckPath, vbDirectory)) = 0 Then MkDir strCheckPath
+    Next
+End Function
+
+
+Private Sub AddRefGuid()
+On Error Resume Next
+
+    'Add VBIDE (Microsoft Visual Basic for Applications Extensibility 5.3
+
+    Application.VBE.VBProjects(1).References.AddFromGuid _
+        "{0002E157-0000-0000-C000-000000000046}", 2, 0
+
+End Sub
+
+
+
